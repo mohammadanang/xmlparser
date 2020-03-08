@@ -8,9 +8,9 @@ class ApiController extends Controller
 {
     public function __construct()
     {
-        $this->food = public_path() . "\xml\simple.xml";
-        $this->plant = public_path() . "\xml\plant_catalog.xml";
-        $this->complex = public_path() . "\xml\complex.xml";
+        $this->food = public_path("xml/simple.xml");
+        $this->plant = public_path("xml/plant_catalog.xml");
+        $this->complex = public_path("xml/complex.xml");
     }
 
     public function index(XmlParserService $parser)
