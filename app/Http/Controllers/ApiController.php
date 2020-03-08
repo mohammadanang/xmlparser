@@ -6,53 +6,56 @@ use App\Services\XmlParserService;
 
 class ApiController extends Controller
 {
-    public function food(XmlParserService $parser)
+    public function __construct()
     {
-        $xml = base_path() . "\public\xml\simple.xml";
-
-        $keys = '';
-        $param = '';
-        if($name = request()->name) {
-            $param = $name;
-        }
-
-        if($keys = request()->keys) {
-            $keys = $keys;
-        }
-
-        $items = $parser->parse($simple_xml, $param);
-        if($param and strpos($param, ".") == false and $keys) {
-            $items = $parser->pluck($items, $keys);
-        }
-
-        return response()->json([
-            'data'      => $items,
-            'xml'       => file_get_contents($xml)
-        ]);
+        $this->food = base_path() . "\public\xml\simple.xml";
+        $this->plant = base_path() . "\public\xml\plant_catalog.xml";
+        $this->complex = base_path() . "\public\xml\complex.xml";
     }
 
-    public function plant(XmlParserService $parser)
+    public function index(XmlParserService $parser)
     {
-        $xml = base_path() . "\public\xml\plant_catalog.xml";
+        $input = request()->file_name;
+        
+        if($input) {
+            switch ($input) {
+                case 'food':
+                    $xml = $this->food;
+                    break;
+                case 'plant':
+                    $xml = $this->plant;
+                    break;
+                case 'complex':
+                    $xml = $this->complex;
+                    break;
+                default:
+                    $xml = $this->food;
+            }
 
-        $keys = '';
-        $param = '';
-        if($name = request()->name) {
-            $param = $name;
-        }
+            $keys = '';
+            $param = '';
+            if($name = request()->name) {
+                $param = $name;
+            }
 
-        if($keys = request()->keys) {
-            $keys = $keys;
-        }
+            if($keys = request()->keys) {
+                $keys = $keys;
+            }
 
-        $items = $parser->parse($simple_xml, $param);
-        if($param and strpos($param, ".") == false and $keys) {
-            $items = $parser->pluck($items, $keys);
+            $items = $parser->parse($xml, $param);
+            if($param and strpos($param, ".0") == false and $keys) {
+                $items = $parser->pluck($items, $keys);
+            }
+
+            return response()->json([
+                'data'      => $items,
+                'xml'       => file_get_contents($xml)
+            ]);
         }
 
         return response()->json([
-            'data'      => $items,
-            'xml'       => file_get_contents($xml)
+            'status'    => 'error',
+            'message'   => '`file_name` input cannot be null'
         ]);
     }
 }

@@ -18,5 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get("/food", 'ApiController@food');
-Route::get("/plant", 'ApiController@plant');
+Route::get("/xml-parse", 'ApiController@index');
